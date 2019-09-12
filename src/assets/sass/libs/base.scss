@@ -1,0 +1,13 @@
+$globalMaxHeight: 750px; // 限制显示最大宽度
+
+@mixin clearfix {
+	display: block;
+	&::after {
+		content: '';
+		overflow: hidden;
+		clear: both;
+		display: block;
+		visibility: hidden;
+		height: 0;
+	}
+}
