@@ -14,3 +14,6 @@ npm run ssr:build // ssr打包
 npm run api // api接口开发
 
 ```
+
+### URL
+[http://example.zhouyh.com/](http://example.zhouyh.com/)
