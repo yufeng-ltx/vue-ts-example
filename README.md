@@ -17,4 +17,4 @@ npm run api // api接口开发
 > 先启动npm run api，启动代理接口服务器，要不所有接口都会报错。
 
 ### URL (在线服务器运行效果)
-[http://example.zhouyh.com/](http://example.zhouyh.com/)
+[https://example.zhouyh.com/](https://example.zhouyh.com/)
