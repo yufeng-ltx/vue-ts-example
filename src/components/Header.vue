@@ -1,6 +1,5 @@
 <template>
   <div class="header">
-    <!-- <h1 v-if="title" class="tit">{{ title }}</h1> -->
     <div class="search">
       <i class="iconfont icon-search"></i>
       <input type="text" placeholder="百度搜索" />
@@ -16,7 +15,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
 export default class Header extends Vue {
-  @Prop() private title!: string
+
 }
 </script>
 
@@ -29,10 +28,6 @@ export default class Header extends Vue {
   top: 0;
   z-index: 10;
   background-color: #fff;
-  .tit {
-    font-size: 42px;
-    line-height: 70px;
-  }
   .search {
     margin-top: 10px;
     background-color: #f4f6fb;

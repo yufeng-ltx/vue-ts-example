@@ -1,17 +1,13 @@
 <template>
-  <div>
-    <div class="shopping-wrap"></div>
-    <Footer selName="shopping" />
-  </div>
+  <div class="shopping-wrap"></div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Footer from '../components/Footer.vue';
 
 @Component({
   components: {
-    Footer
+
   }
 })
 

@@ -1,35 +1,30 @@
 <template>
-  <div>
-    <Header />
-    <div class="content-wrap news-wrap">
-      <ul v-if="newList.length" class="news-list-ul">
-        <li v-for="item in newList" :key="item.id">
-          <div>
+  <div class="news-wrap">
+    <ul v-if="newList.length" class="news-list-ul">
+      <li v-for="item in newList" :key="item.id">
+        <div>
+          <a href="javascript:;" @click="$router.push(`/news/content/${item.id}.html`)">
             <span class="tit">{{ item.title }}</span>
             <span v-if="item.thumbnails && item.thumbnails.length" class="img">
               <img v-lazy="item.thumbnails[0]">
             </span>
-          </div>
-          <p>{{ item.source }} &nbsp; <span>{{ transDate(item.timestamp) }}</span></p>
-        </li>
-      </ul>
-    </div>
-    <Footer selName="news" />
+          </a>
+        </div>
+        <p>{{ item.source }} &nbsp; <span>{{ transDate(item.timestamp) }}</span></p>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import Header from '../components/Header.vue';
-import Footer from '../components/Footer.vue';
 
 const newsModule = namespace('news'); // 获取命名空间
 
 @Component({
   components: { // 依赖组件
-    Header,
-    Footer
+    //
   }
 })
 export default class News extends Vue {
@@ -83,6 +78,9 @@ export default class News extends Vue {
         border-bottom: none;
       }
       >div {
+        @include clearfix;
+      }
+      a {
         @include clearfix;
       }
       .tit {

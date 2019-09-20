@@ -1,38 +1,75 @@
 import Vue from 'vue';
 import Router, { RouteConfig, Route } from 'vue-router';
 
+import Index from './views/Index.vue';
 import News from './views/News.vue';
+import Video from './views/Video.vue';
 import Photo from './views/Photo.vue';
 import Music from './views/Music.vue';
 import Shopping from './views/Shopping.vue';
+import NewsContent from './views/NewsContent.vue';
 
 Vue.use(Router);
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'news',
-    component: News
+    component: Index,
+    children: [
+      {
+        path: '',
+        name: 'news',
+        component: News,
+        meta: {
+          title: '腾讯要闻'
+        }
+      },
+      {
+        path: '/video.html',
+        name: 'video',
+        component: Video,
+        meta: {
+          title: '视频合集'
+        }
+      },
+      {
+        path: '/video.html',
+        name: 'video',
+        component: Video,
+        meta: {
+          title: '视频合集'
+        }
+      },
+      {
+        path: '/music.html',
+        name: 'music',
+        component: Music,
+        meta: {
+          title: '酷狗音乐'
+        }
+      },
+      {
+        path: '/photo.html',
+        name: 'photo',
+        component: Photo,
+        meta: {
+          title: '热点图片'
+        }
+      },
+      {
+        path: '/shopping.html',
+        name: 'shopping',
+        component: Shopping,
+        meta: {
+          title: '网购抢先'
+        }
+      }
+    ]
   },
   {
-    path: '/video',
-    name: 'video',
-    component: () => import(/* webpackChunkName: "Video" */ './views/Video.vue')
-  },
-  {
-    path: '/music',
-    name: 'music',
-    component: Music
-  },
-  {
-    path: '/photo',
-    name: 'photo',
-    component: Photo
-  },
-  {
-    path: '/shopping',
-    name: 'shopping',
-    component: Shopping
+    path: '/news/content/:id.html',
+    name: 'newsContent',
+    component: NewsContent
   }
 ];
 
@@ -53,8 +90,18 @@ const scrollBehavior = (to: Route, from: Route, savedPosition: any) => {
   }
 };
 
-export default () => new Router({
-  mode: 'history',
-  routes,
-  scrollBehavior
-});
+export default () => {
+  const router = new Router({
+    mode: 'history',
+    routes,
+    scrollBehavior
+  });
+
+  router.beforeEach((to: Route, from: Route, next: any) => {
+    const meta: any = to.meta || {};
+    document.title = meta.title || 'vue-ts-example';
+    next();
+  });
+
+  return router;
+};

@@ -2,10 +2,3 @@
 @import './libs//reset.scss';
 @import './libs/font.scss';
 
-.content-wrap {
-  padding: 100px 0;
-  position: relative;
-  height: 100%;
-  background-color: #fff;
-  @include clearfix;
-}

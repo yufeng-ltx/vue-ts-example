@@ -8,48 +8,14 @@ const apiRoot = '/API/';
 const listenPort = 7666;
 const app = express();
 
+const { sucResSend, errResSend, openGzip, paramStringify } = require('./util');
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-
-// 错误处理
-const errHandle = (err, res) => {
-  console.error(`error: ${err.message}`);
-  res.end({});
-};
-
-const paramStringify = (obj, isEncode = true) => {
-  let rs = '';
-  if (!obj) return rs;
-  // 对 key value 编码
-  function encodeFn(str) {
-    if (isEncode) {
-      return String(str)
-        .replace(/[^ !'()~\*]/gu, encodeURIComponent)
-        .replace(/ /g, '+')
-        .replace(/[!'()~\*]/g, ch => '%' + ch.charCodeAt().toString(16).slice(-2).toUpperCase());
-    } else {
-      return str;
-    }
-  }
-  // 拼接
-  Object.keys(obj).forEach(key => {
-    let item = '';
-    // 支持值为数组
-    if (Array.isArray(obj[key])) {
-      obj[key].forEach(x => {
-        if (x) {
-          item = (item && (item + '&')) + encodeFn(key + '[]') + '=' + encodeFn(x);
-        }
-      });
-    } else {
-      item = encodeFn(key) + '=' + encodeFn(obj[key]);
-    }
-    rs = (rs && (rs + '&')) + item;
-  });
-  return rs;
-};
+// open gzip
+openGzip(app);
 
 // 获取腾讯新闻
 app.use(`${apiRoot}news/list`, (req, res) => {
@@ -70,18 +36,12 @@ app.use(`${apiRoot}news/list`, (req, res) => {
       rawData += chunk;
     });
     res1.on('end', () => {
-      const data = {
-        code: 200,
-        msg: 'success',
-        err: 0,
-        ET: Math.random(),
-        newList: []
-      };
+      const data = {};
       let json = {};
       try {
         json = JSON.parse(rawData);
       } catch (err) {
-        errHandle(err, res);
+        errResSend(res, err);
       }
       if (json.idlist) {
         const info = json.idlist[0] || {};
@@ -90,10 +50,49 @@ app.use(`${apiRoot}news/list`, (req, res) => {
       } else {
         data.newList = json.newslist || [];
       }
-      res.send(data);
+      sucResSend(res, data);
     });
   }).on('error', err => {
-    errHandle(err, res);
+    errResSend(res, err);
+  });
+});
+
+// 腾讯新闻详情
+app.use(`${apiRoot}news/content`, (req, res) => {
+  const id = req.query.id;
+  if (!id) errResSend(res, new Error('没有传入id'));
+  https.get(`https://xw.qq.com/cmsid/${id}`, hRes => {
+    let rawData = '';
+    hRes.setEncoding('utf8');
+    hRes.on('data', chunk => {
+      rawData += chunk;
+    });
+    hRes.on('end', () => {
+      const regArr = rawData.match(/var\s+globalConfig\s+=\s+(\{[^]*\};)[\n\s]+<\/script>/);
+      if (regArr && regArr[1]) {
+        try {
+          eval(`global.globalConfig = ${regArr[1]}`);
+          if (global.globalConfig) {
+            const json = global.globalConfig.content || {};
+            sucResSend(res, {
+              data: {
+                html: json.cnt_html || '',
+                attr: json.cnt_attr || {},
+                time: json.alt_time || '',
+                author: json.chlname || '',
+                title: json.title || ''
+              }
+            });
+          } else throw new Error('解析出错');
+        } catch (err) {
+          errResSend(res, err);
+        }
+      } else {
+        errResSend(res, new Error('内容抓取失败'));
+      }
+    });
+  }).on('error', err => {
+    errResSend(res, err);
   });
 });
 
