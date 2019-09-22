@@ -1,7 +1,7 @@
 <template>
   <div class="news-content-wrap">
     <div class="header">
-      <i class="iconfont icon-arrow-left" @click="$router.push('/')"></i>
+      <i class="iconfont icon-arrow-left" @click="$router.go(-1)"></i>
       <span>腾讯新闻</span>
     </div>
     <div class="news-detail">
@@ -61,6 +61,7 @@ export default class NewsContent extends Vue {
     i {
       float: left;
       font-size: 50px;
+      cursor: pointer;
     }
     span {
       padding-left: 20px;
