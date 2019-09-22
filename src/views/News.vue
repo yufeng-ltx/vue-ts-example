@@ -1,36 +1,36 @@
 <template>
   <div class="news-wrap">
-    <ul v-if="newList.length" class="news-list-ul">
-      <li v-for="item in newList" :key="item.id">
-        <div>
-          <a href="javascript:;" @click="$router.push(`/news/content/${item.id}.html`)">
-            <span class="tit">{{ item.title }}</span>
-            <span v-if="item.thumbnails && item.thumbnails.length" class="img">
-              <img v-lazy="item.thumbnails[0]">
-            </span>
-          </a>
-        </div>
-        <p>{{ item.source }} &nbsp; <span>{{ transDate(item.timestamp) }}</span></p>
-      </li>
-    </ul>
+    <template v-if="homeInit">
+      <ul v-if="newList.length" class="news-list-ul">
+        <li v-for="item in newList" :key="item.id">
+          <div>
+            <a href="javascript:;" @click="$router.push(`/news/content/${item.id}.html`)">
+              <span class="tit">{{ item.title }}</span>
+              <span v-if="item.img" class="img">
+                <img v-lazy="item.img">
+              </span>
+            </a>
+          </div>
+          <p>{{ item.source }} &nbsp; <span>{{ transDate(item.time) }}</span></p>
+        </li>
+      </ul>
+    </template>
+    <div v-else class="qqLoading"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
+import { transformDate } from '../utils/tools';
 
 const newsModule = namespace('news'); // 获取命名空间
 
-@Component({
-  components: { // 依赖组件
-    //
-  }
-})
+@Component
 export default class News extends Vue {
-  @newsModule.State private newList!: {}[];
+  @newsModule.State private newList!: Array<object>;
 
-  @newsModule.State private ids!: {}[];
+  @newsModule.State private ids!: Array<object>;
 
   @newsModule.State('init')
   private homeInit!: boolean;
@@ -44,18 +44,7 @@ export default class News extends Vue {
     }
   }
 
-  public transDate(time: number): string {
-    let res = '';
-    let t = (new Date().getTime() - Number(time) * 1000) / 1000;
-    t = parseInt(t.toString(), 10);
-    const day = Math.floor(t / (60 * 60 * 24));
-    const hour = Math.floor(t / (60 * 60));
-    const minute = Math.floor(t / 60);
-    if (day > 0) return day + '天前';
-    if (hour > 0) return hour + '小时前';
-    if (minute > 0) return minute + '分钟前';
-    return '刚刚';
-  }
+  public transDate = transformDate;
 
   public asyncData({ store }: any): void { // ssr初始化加载，数据预取
     return store.dispatch('news/fetchNewsList');

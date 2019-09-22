@@ -44,13 +44,19 @@ app.use(`${apiRoot}news/list`, (req, res) => {
         errResSend(res, err);
       }
       if (json.idlist) {
-        const info = json.idlist[0] || {};
-        data.newList = info.newslist || [];
-        data.ids = info.ids || [];
-      } else {
-        data.newList = json.newslist || [];
+        json = json.idlist[0] || {};
+        data.ids = (json.ids || []).map(item => item.id);
       }
-      sucResSend(res, data);
+      data.list = (json.newslist || []).map(item => {
+        return {
+          title: item.title,
+          id: item.id,
+          source: item.source,
+          time: item.timestamp,
+          img: item.thumbnails && item.thumbnails[0]
+        };
+      });
+      sucResSend(res, { data });
     });
   }).on('error', err => {
     errResSend(res, err);
@@ -74,12 +80,22 @@ app.use(`${apiRoot}news/content`, (req, res) => {
           eval(`global.globalConfig = ${regArr[1]}`);
           if (global.globalConfig) {
             const json = global.globalConfig.content || {};
+            let html = json.cnt_html || '';
+            const attr = json.cnt_attr || {};
+            Object.keys(attr).forEach(name => {
+              html = html.replace(new RegExp(`<!--${name}-->`), () => {
+                const info = attr[name] || {};
+                const url = ((info.img || {})['imgurl640'] || {}).imgurl;
+                if (url) {
+                  return `<p class="p-img"${info.vid && ' data-vid="' + info.vid + '"'}><span class="img"><img src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
+                } else return '';
+              });
+            });
             sucResSend(res, {
               data: {
-                html: json.cnt_html || '',
-                attr: json.cnt_attr || {},
-                time: json.alt_time || '',
-                author: json.chlname || '',
+                html,
+                time: json.org_time || json.pubtime || '',
+                source: json.chlname || json.src || '',
                 title: json.title || ''
               }
             });

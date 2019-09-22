@@ -18,8 +18,8 @@ interface NewList {
     url?: string
     id?: string
     source?: string
-    timestamp?: number
-    thumbnails?: Array<string>
+    time?: number
+    img?: string
   }
 }
 
@@ -38,7 +38,7 @@ const state = (): State => ({ // 避免ssr数据公用，state 必须是一个�
 const actions: ActionTree<State, RootState> = {
   fetchNewsList({ commit }, params): AxiosPromise<State> {
     return http.get('news/list', params).then(res => {
-      const data = res.data || {};
+      const data = (res.data || {}).data;
       commit(types.SET_NEWS_DATA, data);
       return res;
     });
@@ -54,10 +54,8 @@ const actions: ActionTree<State, RootState> = {
 const mutations: MutationTree<State> = {
   [types.SET_NEWS_DATA](state, data) {
     state.init = true; // 已初始化
-    state.newList = data.newList || [];
-    if (data.ids && data.ids.length) {
-      state.ids = data.ids;
-    }
+    state.newList = data.list;
+    if (data.ids) state.ids = data.ids;
   }
 };
 

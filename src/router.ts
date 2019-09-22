@@ -17,19 +17,11 @@ const routes: Array<RouteConfig> = [
     component: Index,
     children: [
       {
-        path: '',
+        path: '/',
         name: 'news',
         component: News,
         meta: {
           title: '腾讯要闻'
-        }
-      },
-      {
-        path: '/video.html',
-        name: 'video',
-        component: Video,
-        meta: {
-          title: '视频合集'
         }
       },
       {
@@ -96,12 +88,14 @@ export default () => {
     routes,
     scrollBehavior
   });
-
-  router.beforeEach((to: Route, from: Route, next: any) => {
-    const meta: any = to.meta || {};
-    document.title = meta.title || 'vue-ts-example';
-    next();
-  });
+  // 只有在客户端才运行
+  if (process.env.BUILD_ENV !== 'SSR') {
+    router.beforeEach((to: Route, from: Route, next: any) => {
+      const meta: any = to.meta || {};
+      document.title = meta.title || 'vue-ts-example';
+      next();
+    });
+  }
 
   return router;
 };

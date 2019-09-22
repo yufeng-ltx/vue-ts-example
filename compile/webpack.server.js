@@ -16,7 +16,9 @@ module.exports = merge(webpackCommonConfig, {
   },
   devtool: 'cheap-module-source-map',
   devServer: {
-    historyApiFallback: true, // 兼容vue-router history模式
+    historyApiFallback: { // 兼容vue-router history模式
+      disableDotRule: true
+    },
     contentBase: path.resolve(__dirname, '../public'),
     hot: true,
     quiet: true,
