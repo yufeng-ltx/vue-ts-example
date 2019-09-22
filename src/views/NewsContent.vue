@@ -1,7 +1,7 @@
 <template>
   <div class="news-content-wrap">
     <div class="header">
-      <i class="iconfont icon-arrow-left" @click="$router.go(-1)"></i>
+      <i class="iconfont icon-arrow-left" @click="$router.push('/')"></i>
       <span>腾讯新闻</span>
     </div>
     <div class="news-detail">
@@ -32,6 +32,10 @@ export default class NewsContent extends Vue {
   public fetchNewContent!: (id: any) => AxiosPromise;
 
   public created(): void {
+    //
+  }
+
+  public beforeMount(): void {
     this.fetchNewContent(this.$route.params.id).then(res => {
       const data = res.data || {};
       this.detail = data;

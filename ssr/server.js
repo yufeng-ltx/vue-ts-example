@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const LRU = require('lru-cache');
 const { createBundleRenderer } = require('vue-server-renderer');
 
 const { getFlexibleCtx, apiProxy, openGzip } = require('../compile/utils');
@@ -36,11 +37,26 @@ const renderer = createBundleRenderer(serverBundle, {
   shouldPrefetch: () => false
 });
 
+// 设置页面缓存
+const microCache = new LRU({
+  max: 100,
+  maxAge: 1000 * 10 // 重要提示：条目在 10 秒后过期。
+});
+
+const isCacheable = (req) => {
+  return true;
+};
+
 // render page
 app.get('*', (req, res) => {
-  res.set({
-    'Content-Type': 'text/html'
-  });
+  // 页面缓存
+  const cacheable = isCacheable(req);
+  if (cacheable) {
+    const hit = microCache.get(req.url);
+    if (hit) {
+      return res.end(hit);
+    }
+  }
   const context = {
     url: req.url,
     flexibleCtx: getFlexibleCtx(),
@@ -58,7 +74,11 @@ app.get('*', (req, res) => {
       }
     }
     res.status(context.HTTPStatus || 200);
-    res.send(html);
+    res.end(html);
+    // 设置缓存
+    if (cacheable) {
+      microCache.set(req.url, html);
+    }
   });
 });
 

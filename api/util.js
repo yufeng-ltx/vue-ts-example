@@ -12,12 +12,14 @@ exports.errResSend = (res, err) => {
 
 // 成功处理
 exports.sucResSend = (res, json) => {
-  res.send(Object.assign({
+  const data = Object.assign({
     code: 200,
     msg: 'success',
     err: 0,
     ET: Math.random()
-  }, json || {}));
+  }, json || {});
+  res.send(data);
+  return data;
 };
 
 // url编码

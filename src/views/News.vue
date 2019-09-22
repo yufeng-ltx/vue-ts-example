@@ -39,6 +39,10 @@ export default class News extends Vue {
   public fetchNewsList!: () => void;
 
   public created(): void {
+    //
+  }
+
+  public beforeMount(): void {
     if (!this.homeInit) { // 已初始化不再执行
       this.fetchNewsList(); // 加载腾讯新闻
     }
