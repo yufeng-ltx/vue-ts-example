@@ -2,7 +2,7 @@
   "publicPath": "/",
   "all": [
     "index.html",
-    "static/css/app.840846dc.css",
+    "static/css/app.276edea2.css",
     "static/img/play-circle.0ce6546d.svg",
     "static/img/qq-logo.a7cbab29.svg",
     "static/js/app.5f0d1f3c.js",
@@ -10,7 +10,7 @@
   ],
   "initial": [
     "static/js/vendors.a90ea56e.js",
-    "static/css/app.840846dc.css",
+    "static/css/app.276edea2.css",
     "static/js/app.5f0d1f3c.js"
   ],
   "async": [],

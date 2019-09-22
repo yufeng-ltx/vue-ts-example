@@ -48,6 +48,7 @@ export default class NewsContent extends Vue {
     z-index: 10;
     height: 90px;
     width: 100%;
+    max-width: $globalMaxHeight; /*no*/
     line-height: 90px;
     padding: 0 20px;
     border-bottom: 1px solid #eee;
