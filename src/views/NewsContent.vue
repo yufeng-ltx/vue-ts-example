@@ -98,7 +98,6 @@ export default class NewsContent extends Vue {
           }
           img {
             max-width: 100%;
-            min-height: 100px;
             display: block;
             margin: 0 auto;
           }

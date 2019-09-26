@@ -113,7 +113,7 @@ app.use(`${apiRoot}news/content`, (req, res) => {
                 const info = attr[name] || {};
                 const url = ((info.img || {})['imgurl640'] || {}).imgurl;
                 if (url) {
-                  return `<p class="p-img"${info.vid && ' data-vid="' + info.vid + '"'}><span class="img"><img src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
+                  return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
                 } else return '';
               });
             });
