@@ -8,7 +8,7 @@
       <div v-if="!detail" class="qqLoading"></div>
       <div v-else>
         <p class="title">{{ detail.title }}</p>
-        <p class="info">{{ detail.source }} <span>{{ detail.time }}</span></p>
+        <p class="info">{{ detail.source }} <span>{{ dateFormat(detail.time) }}</span></p>
         <div class="cont" v-html="detail.html"></div>
       </div>
     </div>
@@ -19,6 +19,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AxiosPromise } from 'axios';
+import { dateFormat } from '../utils/tools';
 
 const newsModule = namespace('news'); // 获取命名空间
 
@@ -38,9 +39,28 @@ export default class NewsContent extends Vue {
   public beforeMount(): void {
     this.fetchNewContent(this.$route.params.id).then(res => {
       const data = res.data || {};
+      const attr = data.attr || {};
+      let html = data.html || '';
+      Object.keys(attr).forEach(name => { // html 拼接
+        html = html.replace(new RegExp(`<!--${name}-->`), () => {
+          const info = attr[name] || {};
+          const url = info.url;
+          if (url) {
+            // const width = (info.width || 0) / 64;
+            // const widthStyle = width ? ' style="width: ' + width + 'rem"' : '';
+            return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
+          } else return '';
+        });
+      });
+      data.html = html;
       this.detail = data;
       document.title = data.title;
     });
+  }
+
+  public dateFormat(time: string): string {
+    const date = new Date(time);
+    return dateFormat(date, 'MM-dd hh:mm');
   }
 }
 </script>
@@ -102,7 +122,7 @@ export default class NewsContent extends Vue {
             margin: 0 auto;
           }
           .desc {
-            font-size: 30px;
+            font-size: 28px;
             color: #666;
             padding: 10px 0;
           }
@@ -124,7 +144,7 @@ export default class NewsContent extends Vue {
               }
             }
             img {
-              width: 80%;
+              width: 80%!important;
             }
           }
         }

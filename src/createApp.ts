@@ -1,15 +1,9 @@
 import Vue from 'vue';
-import {
-  Swipe,
-  SwipeItem
-} from 'vant';
 import { sync } from 'vuex-router-sync';
 
 import App from './App.vue';
 import createRouter from './router';
 import createStore from './store/index';
-
-Vue.use(Swipe).use(SwipeItem);
 
 export default () => {
   const router = createRouter();

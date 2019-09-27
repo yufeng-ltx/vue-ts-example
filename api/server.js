@@ -21,7 +21,7 @@ openGzip(app);
 // 设置接口缓存
 const microCache = new LRU({
   max: 100,
-  maxAge: 1000 * 60 // 重要提示：条目在 60 秒后过期。
+  maxAge: 1000 * 30 // 重要提示：条目在 30 秒后过期。
 });
 
 // 获取缓存
@@ -73,8 +73,9 @@ app.use(`${apiRoot}news/list`, (req, res) => {
           title: item.title,
           id: item.id,
           source: item.source,
-          time: item.timestamp,
-          img: item.thumbnails && item.thumbnails[0]
+          time: item.timestamp * 1000,
+          img: item.thumbnails && item.thumbnails[0],
+          type: item.articletype
         };
       });
       // 设置缓存输出
@@ -108,22 +109,26 @@ app.use(`${apiRoot}news/content`, (req, res) => {
             const json = global.globalConfig.content || {};
             let html = json.cnt_html || '';
             const attr = json.cnt_attr || {};
+            const attrCopy = {};
             Object.keys(attr).forEach(name => {
-              html = html.replace(new RegExp(`<!--${name}-->`), () => {
-                const info = attr[name] || {};
-                const url = ((info.img || {})['imgurl640'] || {}).imgurl;
-                if (url) {
-                  return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
-                } else return '';
-              });
+              const info = attr[name] || {};
+              const img = (info.img || {})['imgurl640'] || {};
+              attrCopy[name] = {
+                desc: info.desc || '',
+                width: img.width || 0,
+                height: img.height || 0,
+                url: img.imgurl || '',
+                vid: info.vid || ''
+              };
             });
             // 设置缓存输出
             setCacheFn(req, res, {
               data: {
                 html,
-                time: json.org_time || json.pubtime || '',
+                time: new Date(json.org_time || json.pubtime || '').getTime() || '',
                 source: json.chlname || json.src || '',
-                title: json.title || ''
+                title: json.title || '',
+                attr: attrCopy
               }
             });
           } else throw new Error('解析出错');
