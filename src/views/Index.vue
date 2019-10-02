@@ -3,6 +3,7 @@
     <Header />
     <router-view class="content-wrap" />
     <Footer />
+    <BackTop />
   </div>
 </template>
 
@@ -10,11 +11,13 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+import BackTop from '../components/BackTop.vue';
 
 @Component({
   components: { // 依赖组件
     Header,
-    Footer
+    Footer,
+    BackTop
   }
 })
 export default class Index extends Vue {

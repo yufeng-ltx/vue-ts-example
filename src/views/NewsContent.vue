@@ -1,7 +1,7 @@
 <template>
   <div class="news-content-wrap">
     <div class="header">
-      <i class="iconfont icon-arrow-left" @click="$router.go(-1)"></i>
+      <i class="iconfont icon-arrow-left" @click="$router.push('/')"></i>
       <span>腾讯新闻</span>
     </div>
     <div class="news-detail">
@@ -12,6 +12,7 @@
         <div class="cont" v-html="detail.html"></div>
       </div>
     </div>
+    <BackTop />
   </div>
 </template>
 
@@ -19,11 +20,16 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AxiosPromise } from 'axios';
+import BackTop from '../components/BackTop.vue';
 import { dateFormat } from '../utils/tools';
 
 const newsModule = namespace('news'); // 获取命名空间
 
-@Component
+@Component({
+  components: {
+    BackTop
+  }
+})
 export default class NewsContent extends Vue {
   private detail: any = null;
 
