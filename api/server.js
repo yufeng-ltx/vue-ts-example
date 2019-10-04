@@ -34,6 +34,12 @@ const setCacheFn = (req, res, data) => {
   microCache.set(req.originalUrl, sucResSend(res, data));
 };
 
+// 替换腾讯图片https
+const replaceImgHttps = (src) => {
+  if (!src) return src;
+  return src.replace('http://inews.gtimg.com/', 'https://inews.gtimg.com/');
+};
+
 // 获取腾讯新闻
 app.use(`${apiRoot}news/list`, (req, res) => {
   // 获取缓存数据
@@ -74,7 +80,7 @@ app.use(`${apiRoot}news/list`, (req, res) => {
           id: item.id,
           source: item.source,
           time: item.timestamp * 1000,
-          img: item.thumbnails && item.thumbnails[0],
+          img: replaceImgHttps(item.thumbnails && item.thumbnails[0]),
           type: item.articletype
         };
       });
@@ -117,7 +123,7 @@ app.use(`${apiRoot}news/content`, (req, res) => {
                 desc: info.desc || '',
                 width: img.width || 0,
                 height: img.height || 0,
-                url: img.imgurl || '',
+                url: replaceImgHttps(img.imgurl || ''),
                 vid: info.vid || ''
               };
             });

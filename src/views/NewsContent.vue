@@ -50,7 +50,7 @@ export default class NewsContent extends Vue {
       Object.keys(attr).forEach(name => { // html 拼接
         html = html.replace(new RegExp(`<!--${name}-->`), () => {
           const info = attr[name] || {};
-          const url = info.url;
+          let url = info.url;
           if (url) {
             // const width = (info.width || 0) / 64;
             // const widthStyle = width ? ' style="width: ' + width + 'rem"' : '';
