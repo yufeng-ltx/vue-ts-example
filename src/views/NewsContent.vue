@@ -1,9 +1,6 @@
 <template>
   <div class="news-content-wrap">
-    <div class="header">
-      <i class="iconfont icon-arrow-left" @click="$router.push('/')"></i>
-      <span>腾讯新闻</span>
-    </div>
+    <HeaderBack name="腾讯新闻" />
     <div class="news-detail">
       <div v-if="!detail" class="qqLoading"></div>
       <div v-else>
@@ -21,12 +18,14 @@ import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AxiosPromise } from 'axios';
 import BackTop from '../components/BackTop.vue';
-import { dateFormat } from '../utils/tools';
+import HeaderBack from '../components/HeaderBack.vue';
+import { dateFormat, base64Trans } from '../utils/tools';
 
 const newsModule = namespace('news'); // 获取命名空间
 
 @Component({
   components: {
+    HeaderBack,
     BackTop
   }
 })
@@ -34,6 +33,8 @@ export default class NewsContent extends Vue {
   private detail: any = null;
 
   private htmlContent: string = '';
+
+  private lazyObj: any = null;
 
   @newsModule.Action
   public fetchNewContent!: (id: any) => AxiosPromise;
@@ -52,16 +53,51 @@ export default class NewsContent extends Vue {
           const info = attr[name] || {};
           let url = info.url;
           if (url) {
-            // const width = (info.width || 0) / 64;
-            // const widthStyle = width ? ' style="width: ' + width + 'rem"' : '';
-            return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
+            const height = (info.height || 0) / 64;
+            const heightStyle = height ? ' style="height: ' + height + 'rem"' : '';
+            return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img${heightStyle} data-src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
           } else return '';
         });
       });
       data.html = html;
       this.detail = data;
       document.title = data.title;
+      // 图片懒加载
+      this.$nextTick(() => {
+        const attr = 'data-src';
+        const $img: Array<Element> = Array.prototype.slice.call(document.body.querySelectorAll(`img[${attr}]`));
+        if (!$img.length) return;
+        // 图片在可视区域，执行
+        const complete = (target: Element) => {
+          let src = target.getAttribute(attr);
+          if (!src) return;
+          target.setAttribute('src', src);
+          target.removeAttribute(attr);
+          target.removeAttribute('style');
+        };
+        this.lazyObj = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.intersectionRatio > 0) {
+              const target = entry.target;
+              observer.unobserve(target);
+              complete(target);
+            }
+          });
+        });
+        $img.forEach((e) => {
+          if (!e.getAttribute('src')) { // 设置透明背景
+            e.setAttribute('src', base64Trans);
+          }
+          this.lazyObj.observe(e);
+        });
+      });
     });
+  }
+
+  public destroyed() {
+    if (this.lazyObj && this.lazyObj.disconnect) {
+      this.lazyObj.disconnect(); // 清除监听lazyImg
+    }
   }
 
   public dateFormat(time: string): string {
@@ -73,28 +109,6 @@ export default class NewsContent extends Vue {
 
 <style lang="scss">
 .news-content-wrap {
-  .header {
-    position: fixed;
-    z-index: 10;
-    height: 90px;
-    width: 100%;
-    max-width: $globalMaxHeight; /*no*/
-    line-height: 90px;
-    padding: 0 20px;
-    border-bottom: 1px solid #eee;
-    background-color: #537bff;
-    color: #fff;
-    i {
-      float: left;
-      font-size: 50px;
-      cursor: pointer;
-    }
-    span {
-      padding-left: 20px;
-      font-weight: bold;
-      font-size: 36px;
-    }
-  }
   .news-detail {
     padding: 100px 30px 20px 30px;
     line-height: 1.5;

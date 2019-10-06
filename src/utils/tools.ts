@@ -33,3 +33,5 @@ export const dateFormat = (date: Date, format: string): string => {
   }
   return format;
 };
+
+export const base64Trans: string = 'data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEAAAIALAAAAAABAAEAAAICVAEAOw==';
