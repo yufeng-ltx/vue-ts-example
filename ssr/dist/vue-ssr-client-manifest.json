@@ -2,16 +2,16 @@
   "publicPath": "/",
   "all": [
     "index.html",
-    "static/css/app.680c356c.css",
+    "static/css/app.4531b103.css",
     "static/img/play-circle.0ce6546d.svg",
     "static/img/qq-logo.a7cbab29.svg",
-    "static/js/app.209dacd8.js",
-    "static/js/vendors.3d648001.js"
+    "static/js/app.be693a2a.js",
+    "static/js/vendors.7219804d.js"
   ],
   "initial": [
-    "static/js/vendors.3d648001.js",
-    "static/css/app.680c356c.css",
-    "static/js/app.209dacd8.js"
+    "static/js/vendors.7219804d.js",
+    "static/css/app.4531b103.css",
+    "static/js/app.be693a2a.js"
   ],
   "async": [],
   "modules": {
@@ -44,6 +44,12 @@
     ],
     "f046ddd2": [
       5
+    ],
+    "5976e55f": [
+      1,
+      4,
+      3,
+      2
     ],
     "384dea3e": [
       5
@@ -366,6 +372,12 @@
       3,
       2
     ],
+    "0d1df6dc": [
+      1,
+      4,
+      3,
+      2
+    ],
     "275f8138": [
       1,
       4,
@@ -404,6 +416,12 @@
     ],
     "9fef9f20": [
       5
+    ],
+    "4304404e": [
+      1,
+      4,
+      3,
+      2
     ],
     "31fdfc71": [
       5
