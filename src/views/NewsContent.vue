@@ -2,11 +2,11 @@
   <div class="news-content-wrap">
     <HeaderBack name="腾讯新闻" />
     <div class="news-detail">
-      <div v-if="!detail" class="qqLoading"></div>
+      <div v-if="!currentContent" class="qqLoading"></div>
       <div v-else>
-        <p class="title">{{ detail.title }}</p>
-        <p class="info">{{ detail.source }} <span>{{ dateFormat(detail.time) }}</span></p>
-        <div class="cont" v-html="detail.html"></div>
+        <p class="title">{{ currentContent.title }}</p>
+        <p class="info">{{ currentContent.source }} <span>{{ dateFormat(currentContent.time) }}</span></p>
+        <div class="cont" v-html="htmlContent"></div>
       </div>
     </div>
     <BackTop />
@@ -14,12 +14,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AxiosPromise } from 'axios';
 import BackTop from '../components/BackTop.vue';
 import HeaderBack from '../components/HeaderBack.vue';
-import { dateFormat, base64Trans } from '../utils/tools';
+import { dateFormat, lazyImg } from '../utils/tools';
 
 const newsModule = namespace('news'); // 获取命名空间
 
@@ -30,8 +30,6 @@ const newsModule = namespace('news'); // 获取命名空间
   }
 })
 export default class NewsContent extends Vue {
-  private detail: any = null;
-
   private htmlContent: string = '';
 
   private newId: string = '';
@@ -42,72 +40,66 @@ export default class NewsContent extends Vue {
   private newContent!: any;
 
   @newsModule.Action
-  public fetchNewContent!: (id: any) => AxiosPromise;
+  public fetchNewContent!: (id: string) => AxiosPromise;
 
   private get currentContent(): any {
     this.newId = this.$route.params.id;
     return this.newContent[this.newId] || null;
   }
 
-  // public cre
+  @Watch('currentContent')
+  public newsChange() { // 监听变化
+    this.setNewsDetail();
+    this.renderOther();
+  }
 
-  public beforeMount(): void {
-    console.log(this.currentContent);
-    // if
-    // this.fetchNewContent(this.$route.params.id).then(res => {
-    //   const data = res.data || {};
-    //   const attr = data.attr || {};
-    //   let html = data.html || '';
-    //   Object.keys(attr).forEach(name => { // html 拼接
-    //     html = html.replace(new RegExp(`<!--${name}-->`), () => {
-    //       const info = attr[name] || {};
-    //       let url = info.url;
-    //       if (url) {
-    //         const height = (info.height || 0) / 64;
-    //         const heightStyle = height ? ' style="height: ' + height + 'rem"' : '';
-    //         return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img${heightStyle} data-src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
-    //       } else return '';
-    //     });
-    //   });
-    //   data.html = html;
-    //   this.detail = data;
-    //   document.title = data.title;
-    //   // 图片懒加载
-    //   this.$nextTick(() => {
-    //     const attr = 'data-src';
-    //     const $img: Array<Element> = Array.prototype.slice.call(document.body.querySelectorAll(`img[${attr}]`));
-    //     if (!$img.length) return;
-    //     // 图片在可视区域，执行
-    //     const complete = (target: Element) => {
-    //       let src = target.getAttribute(attr);
-    //       if (!src) return;
-    //       target.setAttribute('src', src);
-    //       target.removeAttribute(attr);
-    //       target.removeAttribute('style');
-    //     };
-    //     this.lazyObj = new IntersectionObserver((entries, observer) => {
-    //       entries.forEach((entry) => {
-    //         if (entry.intersectionRatio > 0) {
-    //           const target = entry.target;
-    //           observer.unobserve(target);
-    //           complete(target);
-    //         }
-    //       });
-    //     });
-    //     $img.forEach((e) => {
-    //       if (!e.getAttribute('src')) { // 设置透明背景
-    //         e.setAttribute('src', base64Trans);
-    //       }
-    //       this.lazyObj.observe(e);
-    //     });
-    //   });
-    // });
+  public created() {
+    this.setNewsDetail(); // 初始化
+  }
+
+  public beforeMount() {
+    if (this.currentContent) {
+      this.renderOther();
+    } else {
+      this.fetchNewContent(this.newId); // 请求接口
+    }
   }
 
   public destroyed() {
     if (this.lazyObj && this.lazyObj.disconnect) {
       this.lazyObj.disconnect(); // 清除监听lazyImg
     }
+  }
+
+  public asyncData({ store, route }: any): void { // ssr初始化加载，数据预取
+    return store.dispatch('news/fetchNewContent', route.params.id);
+  }
+
+  public setNewsDetail() {
+    const data = this.currentContent;
+    if (!data) return false;
+    const attr = data.attr || {};
+    let html = data.html || '';
+    Object.keys(attr).forEach(name => { // html 拼接
+      html = html.replace(new RegExp(`<!--${name}-->`), () => {
+        const info = attr[name] || {};
+        let url = info.url;
+        if (url) {
+          const height = (info.height || 0) / 64;
+          const heightStyle = height ? ' style="height: ' + height + 'rem"' : '';
+          return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img${heightStyle} data-src="${url}"></span><span class="desc">${info.desc || ''}</span></p>`;
+        } else return '';
+      });
+    });
+    this.htmlContent = html;
+  }
+
+  public renderOther() {
+    if (!this.currentContent) return;
+    document.title = this.currentContent.title;
+    this.$nextTick(() => {
+      this.lazyObj = lazyImg();
+    });
   }
 
   public dateFormat(time: string): string {

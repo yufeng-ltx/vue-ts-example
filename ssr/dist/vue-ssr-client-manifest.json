@@ -5,13 +5,13 @@
     "static/css/app.4531b103.css",
     "static/img/play-circle.0ce6546d.svg",
     "static/img/qq-logo.a7cbab29.svg",
-    "static/js/app.be693a2a.js",
-    "static/js/vendors.7219804d.js"
+    "static/js/app.2e66539e.js",
+    "static/js/vendors.c9164ef5.js"
   ],
   "initial": [
-    "static/js/vendors.7219804d.js",
+    "static/js/vendors.c9164ef5.js",
     "static/css/app.4531b103.css",
-    "static/js/app.be693a2a.js"
+    "static/js/app.2e66539e.js"
   ],
   "async": [],
   "modules": {

@@ -8,8 +8,10 @@ export default context => new Promise((resolve, reject) => {
   router.onReady(() => {
     const matchedComponents = router.getMatchedComponents();
     // 设定title
-    context.title = 'vue-ts-example';
-    // context.title = router.history.current.name || 'app';
+    const currentRoute = router.currentRoute; // 获取当前路由信息
+    const currentMeta = currentRoute.meta || {};
+    const defaultTitle = 'vue-ts-example';
+    context.title = currentMeta.title || defaultTitle;
     // 匹配不到的路由，执行 reject 函数，并返回 404
     if (!matchedComponents.length) {
       return reject({ code: 404 });
@@ -20,11 +22,20 @@ export default context => new Promise((resolve, reject) => {
       if (methods.asyncData) { // 调用 asyncData
         return methods.asyncData({
           store,
-          route: router.currentRoute
+          route: currentRoute
         });
       }
     })).then(() => {
       context.state = store.state;
+      // 新闻内页设置title信息
+      if (currentRoute.name === 'newsContent') {
+        const newContent = (context.state.news || {}).newContent || {};
+        let title = '';
+        Object.keys(newContent).forEach(id => {
+          title = (newContent[id] || {}).title;
+        });
+        if (title) context.title = title;
+      }
       resolve(app);
     }).catch(reject);
   }, reject);

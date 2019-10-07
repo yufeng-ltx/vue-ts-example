@@ -35,3 +35,33 @@ export const dateFormat = (date: Date, format: string): string => {
 };
 
 export const base64Trans: string = 'data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEAAAIALAAAAAABAAEAAAICVAEAOw==';
+
+export const lazyImg = (): IntersectionObserver|undefined => { // 图片延迟加载
+  const attr = 'data-src';
+  const $img: Array<Element> = Array.prototype.slice.call(document.body.querySelectorAll(`img[${attr}]`));
+  if (!$img.length) return;
+  // 图片在可视区域，执行
+  const complete = (target: Element) => {
+    let src = target.getAttribute(attr);
+    if (!src) return;
+    target.setAttribute('src', src);
+    target.removeAttribute(attr);
+    target.removeAttribute('style');
+  };
+  const lazyObj = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio > 0) {
+        const target = entry.target;
+        observer.unobserve(target);
+        complete(target);
+      }
+    });
+  });
+  $img.forEach((e) => {
+    if (!e.getAttribute('src')) { // 设置透明背景
+      e.setAttribute('src', base64Trans);
+    }
+    lazyObj.observe(e);
+  });
+  return lazyObj;
+};
