@@ -34,64 +34,74 @@ export default class NewsContent extends Vue {
 
   private htmlContent: string = '';
 
+  private newId: string = '';
+
   private lazyObj: any = null;
+
+  @newsModule.State
+  private newContent!: any;
 
   @newsModule.Action
   public fetchNewContent!: (id: any) => AxiosPromise;
 
-  public created(): void {
-    //
+  private get currentContent(): any {
+    this.newId = this.$route.params.id;
+    return this.newContent[this.newId] || null;
   }
 
+  // public cre
+
   public beforeMount(): void {
-    this.fetchNewContent(this.$route.params.id).then(res => {
-      const data = res.data || {};
-      const attr = data.attr || {};
-      let html = data.html || '';
-      Object.keys(attr).forEach(name => { // html 拼接
-        html = html.replace(new RegExp(`<!--${name}-->`), () => {
-          const info = attr[name] || {};
-          let url = info.url;
-          if (url) {
-            const height = (info.height || 0) / 64;
-            const heightStyle = height ? ' style="height: ' + height + 'rem"' : '';
-            return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img${heightStyle} data-src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
-          } else return '';
-        });
-      });
-      data.html = html;
-      this.detail = data;
-      document.title = data.title;
-      // 图片懒加载
-      this.$nextTick(() => {
-        const attr = 'data-src';
-        const $img: Array<Element> = Array.prototype.slice.call(document.body.querySelectorAll(`img[${attr}]`));
-        if (!$img.length) return;
-        // 图片在可视区域，执行
-        const complete = (target: Element) => {
-          let src = target.getAttribute(attr);
-          if (!src) return;
-          target.setAttribute('src', src);
-          target.removeAttribute(attr);
-          target.removeAttribute('style');
-        };
-        this.lazyObj = new IntersectionObserver((entries, observer) => {
-          entries.forEach((entry) => {
-            if (entry.intersectionRatio > 0) {
-              const target = entry.target;
-              observer.unobserve(target);
-              complete(target);
-            }
-          });
-        });
-        $img.forEach((e) => {
-          if (!e.getAttribute('src')) { // 设置透明背景
-            e.setAttribute('src', base64Trans);
-          }
-          this.lazyObj.observe(e);
-        });
-      });
-    });
+    console.log(this.currentContent);
+    // if
+    // this.fetchNewContent(this.$route.params.id).then(res => {
+    //   const data = res.data || {};
+    //   const attr = data.attr || {};
+    //   let html = data.html || '';
+    //   Object.keys(attr).forEach(name => { // html 拼接
+    //     html = html.replace(new RegExp(`<!--${name}-->`), () => {
+    //       const info = attr[name] || {};
+    //       let url = info.url;
+    //       if (url) {
+    //         const height = (info.height || 0) / 64;
+    //         const heightStyle = height ? ' style="height: ' + height + 'rem"' : '';
+    //         return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img${heightStyle} data-src="${url}"></span><span class="desc">${info.desc || ''}</span></div>`;
+    //       } else return '';
+    //     });
+    //   });
+    //   data.html = html;
+    //   this.detail = data;
+    //   document.title = data.title;
+    //   // 图片懒加载
+    //   this.$nextTick(() => {
+    //     const attr = 'data-src';
+    //     const $img: Array<Element> = Array.prototype.slice.call(document.body.querySelectorAll(`img[${attr}]`));
+    //     if (!$img.length) return;
+    //     // 图片在可视区域，执行
+    //     const complete = (target: Element) => {
+    //       let src = target.getAttribute(attr);
+    //       if (!src) return;
+    //       target.setAttribute('src', src);
+    //       target.removeAttribute(attr);
+    //       target.removeAttribute('style');
+    //     };
+    //     this.lazyObj = new IntersectionObserver((entries, observer) => {
+    //       entries.forEach((entry) => {
+    //         if (entry.intersectionRatio > 0) {
+    //           const target = entry.target;
+    //           observer.unobserve(target);
+    //           complete(target);
+    //         }
+    //       });
+    //     });
+    //     $img.forEach((e) => {
+    //       if (!e.getAttribute('src')) { // 设置透明背景
+    //         e.setAttribute('src', base64Trans);
+    //       }
+    //       this.lazyObj.observe(e);
+    //     });
+    //   });
+    // });
   }
 
   public destroyed() {

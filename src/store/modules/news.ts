@@ -1,8 +1,9 @@
-import { ActionTree, MutationTree, Module } from 'vuex';
+import { ActionTree, MutationTree, Module, GetterTree } from 'vuex';
 import { AxiosPromise } from 'axios';
 import { RootState } from '../types';
 import * as types from '../mutation-types';
 import http from '../../utils/http';
+import { stat } from 'fs';
 
 interface NewList {
   title: string
@@ -16,13 +17,15 @@ interface NewList {
 interface State { // 定义接口
   init: boolean
   newList: Array<NewList>
-  ids: Array<string>
+  ids: Array<string>,
+  newContent: { [id: string]: any }
 }
 
 const state = (): State => ({ // 避免ssr数据公用，state 必须是一个函数
   init: false,
   newList: [],
-  ids: []
+  ids: [],
+  newContent: {}
 });
 
 const actions: ActionTree<State, RootState> = {
@@ -37,6 +40,7 @@ const actions: ActionTree<State, RootState> = {
   fetchNewContent({ commit }, id): AxiosPromise {
     return http.get('news/content', { params: { id }}).then(res => {
       const data = res.data || {};
+      commit(types.SET_NEWS_CONTENT, { id, data: data.data || {}});
       return data;
     });
   }
@@ -64,6 +68,9 @@ const mutations: MutationTree<State> = {
   },
   [types.SET_NEWS_IDS](state) {
     state.ids = state.ids.slice(20); // 设置ids
+  },
+  [types.SET_NEWS_CONTENT](state, { id, data }) {
+    state.newContent = { [id]: data }; // 设置新闻内容
   }
 };
 

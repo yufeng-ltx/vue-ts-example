@@ -48,8 +48,7 @@ export default class News extends Vue {
 
   @newsModule.State private ids!: Array<string>;
 
-  @newsModule.State('init')
-  private homeInit!: boolean;
+  @newsModule.State('init') private homeInit!: boolean;
 
   @newsModule.Action
   public fetchNewsList!: (params?: any) => AxiosPromise;
@@ -61,10 +60,7 @@ export default class News extends Vue {
     return !this.ids.length;
   }
 
-  public created(): void {
-    //
-  }
-
+  // 挂载之前操作
   public beforeMount(): void {
     if (!this.homeInit) { // 已初始化不再执行
       this.fetchNewsList(); // 加载腾讯新闻
