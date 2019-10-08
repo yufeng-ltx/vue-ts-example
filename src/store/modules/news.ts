@@ -3,7 +3,6 @@ import { AxiosPromise } from 'axios';
 import { RootState } from '../types';
 import * as types from '../mutation-types';
 import http from '../../utils/http';
-import { stat } from 'fs';
 
 interface NewList {
   title: string
