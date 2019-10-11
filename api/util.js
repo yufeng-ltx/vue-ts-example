@@ -9,7 +9,6 @@ exports.errResSend = (res, err) => {
     msg
   });
   console.error(`error: ${msg}`);
-  res.status(500);
   res.end();
 };
 
