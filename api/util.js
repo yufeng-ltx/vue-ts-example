@@ -1,13 +1,16 @@
 // 错误处理
 exports.errResSend = (res, err) => {
-  res.end({
-    err: 1,
-    ET: Math.random()
-  });
   err = err || new Error();
-  if (err.message) {
-    console.error(`error: ${err.message}`);
-  }
+  const msg = err.message || '数据处理出错，请重试';
+  res.send({
+    err: 1,
+    ET: Math.random(),
+    code: 500,
+    msg
+  });
+  console.error(`error: ${msg}`);
+  res.status(500);
+  res.end();
 };
 
 // 成功处理

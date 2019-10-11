@@ -99,7 +99,7 @@ app.use(`${apiRoot}news/content`, (req, res) => {
   if (cache) return true;
   // 抓取信息
   const id = req.query.id;
-  if (!id) errResSend(res, new Error('没有传入id'));
+  if (!id) errResSend(res, new Error('请求出错，没有传入id'));
   https.get(`https://xw.qq.com/cmsid/${id}`, hRes => {
     let rawData = '';
     hRes.setEncoding('utf8');
@@ -137,12 +137,12 @@ app.use(`${apiRoot}news/content`, (req, res) => {
                 attr: attrCopy
               }
             });
-          } else throw new Error('解析出错');
+          } else throw new Error('请求出错，解析数据失败');
         } catch (err) {
           errResSend(res, err);
         }
       } else {
-        errResSend(res, new Error('内容抓取失败'));
+        errResSend(res, new Error('请求出错，内容抓取失败'));
       }
     });
   }).on('error', err => {

@@ -30,6 +30,8 @@ import { List, PullRefresh } from 'vant';
 import { AxiosPromise } from 'axios';
 import { transformDate } from '../utils/tools';
 import * as types from '../store/mutation-types';
+import { QQNewListData } from '../store/types';
+import { SSRAsyncData } from '../types/types';
 
 const newsModule = namespace('news'); // 获取命名空间
 
@@ -44,14 +46,14 @@ export default class News extends Vue {
 
   private moreLoad: boolean = false; // 下滑滚动加载标识
 
-  @newsModule.State private newList!: Array<any>;
+  @newsModule.State private newList!: Array<QQNewListData>;
 
   @newsModule.State private ids!: Array<string>;
 
   @newsModule.State('init') private homeInit!: boolean;
 
   @newsModule.Action
-  public fetchNewsList!: (params?: any) => AxiosPromise;
+  public fetchNewsList!: (params?: { ids?: string, _t?: number }) => AxiosPromise;
 
   @newsModule.Mutation(types.SET_NEWS_IDS)
   public setNewsIds!: () => void;
@@ -61,10 +63,14 @@ export default class News extends Vue {
   }
 
   // 挂载之前操作
-  public beforeMount(): void {
+  public beforeMount() {
     if (!this.homeInit) { // 已初始化不再执行
       this.fetchNewsList(); // 加载腾讯新闻
     }
+  }
+
+  public asyncData({ store }: SSRAsyncData): AxiosPromise { // ssr初始化加载，数据预取
+    return store.dispatch('news/fetchNewsList');
   }
 
   public transDate = transformDate;
@@ -82,10 +88,6 @@ export default class News extends Vue {
     this.fetchNewsList({ ids: ids.join(',') }).then(() => {
       this.moreLoad = false;
     });
-  }
-
-  public asyncData({ store }: any): void { // ssr初始化加载，数据预取
-    return store.dispatch('news/fetchNewsList');
   }
 }
 </script>

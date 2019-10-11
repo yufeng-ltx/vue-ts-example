@@ -15,7 +15,7 @@ const setCacheConfig = () => {
 
   const cacheConfigFiles = [ // watch file change
     './utils.js',
-    './webpack.common.conf.js',
+    './webpack.base.js',
     '../babel.config.js',
     '../tsconfig.json'
   ];

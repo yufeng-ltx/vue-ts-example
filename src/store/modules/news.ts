@@ -1,23 +1,14 @@
-import { ActionTree, MutationTree, Module, GetterTree } from 'vuex';
+import { ActionTree, MutationTree, Module } from 'vuex';
 import { AxiosPromise } from 'axios';
-import { RootState } from '../types';
+import { RootState, QQNewListData, QQNewContentObjData } from '../types';
 import * as types from '../mutation-types';
 import http from '../../utils/http';
 
-interface NewList {
-  title: string
-  id: string
-  source: string
-  time: number
-  img: string
-  type: string
-}
-
 interface State { // 定义接口
   init: boolean
-  newList: Array<NewList>
+  newList: Array<QQNewListData>
   ids: Array<string>,
-  newContent: { [id: string]: any }
+  newContent: QQNewContentObjData
 }
 
 const state = (): State => ({ // 避免ssr数据公用，state 必须是一个函数
@@ -28,19 +19,19 @@ const state = (): State => ({ // 避免ssr数据公用，state 必须是一个�
 });
 
 const actions: ActionTree<State, RootState> = {
-  fetchNewsList({ commit }, params): AxiosPromise<State> {
+  fetchNewsList({ commit }, params): AxiosPromise {
     params = params || {};
     return http.get('news/list', { params }).then(res => {
-      const data = (res.data || {}).data;
+      const data = (res.data || {}).data || {};
       commit(types.SET_NEWS_DATA, data);
       return res;
     });
   },
   fetchNewContent({ commit }, id): AxiosPromise {
     return http.get('news/content', { params: { id }}).then(res => {
-      const data = res.data || {};
-      commit(types.SET_NEWS_CONTENT, { id, data: data.data || {}});
-      return data;
+      const data = (res.data || {}).data || {};
+      commit(types.SET_NEWS_CONTENT, { id, data });
+      return res;
     });
   }
 };
@@ -48,7 +39,7 @@ const actions: ActionTree<State, RootState> = {
 const mutations: MutationTree<State> = {
   [types.SET_NEWS_DATA](state, data) {
     state.init = true; // 已初始化
-    const list: Array<NewList> = data.list || [];
+    const list: Array<QQNewListData> = data.list || [];
     const ids: Array<string> = data.ids;
     if (ids && ids.length) {
       state.ids = ids; // 重置ids数组

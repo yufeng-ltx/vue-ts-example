@@ -1,6 +1,7 @@
-export interface DiscountListData { // 定义dicount模块list数据接口
-  title: string
-  desc: string
-  bgColor?: string
-  iClass: string
+import { Store } from 'vuex';
+import { Route } from 'vue-router';
+
+export interface SSRAsyncData { // ssr 预加载函数参数接口
+  store: Store<any>
+  route: Route
 }

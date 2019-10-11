@@ -6,12 +6,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 
-@Component({
-  components: {
-
-  }
-})
-
+@Component
 export default class Video extends Vue {
 
 }
