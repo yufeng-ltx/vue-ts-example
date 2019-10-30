@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   root: true,
   parserOptions: {
@@ -13,11 +15,27 @@ module.exports = {
     es6: true,
     browser: true
   },
+  plugins: [
+    "import"
+  ],
   extends: [
     "eslint:recommended",
-    "plugin:vue/recommended"
+    "plugin:vue/recommended",
+    "plugin:import/errors"
   ],
+  settings: {
+    "import/resolver": {
+      webpack: {
+        config: path.resolve(__dirname, "compile/webpack.base.js") // 解析webpack配置
+      },
+      typescript: {
+        
+      }
+    }
+  },
   rules: {
+    "import/no-unresolved": [2, { commonjs: true, amd: true }],
+    "import/named": 0,
     "vue/attribute-hyphenation": 0,
     "vue/html-self-closing": 0,
     "vue/max-attributes-per-line": 0,
@@ -43,7 +61,7 @@ module.exports = {
     "key-spacing": 2,
     "arrow-spacing": 2,
     "lines-between-class-members": 2,
-    "object-curly-spacing": [2, "always", { "objectsInObjects": false }],
+    "object-curly-spacing": [2, "always"],
     "object-curly-newline": 2,
     "no-useless-escape": 0,
     "no-multiple-empty-lines": [ 2, { "max": 2, "maxEOF": 0 }],

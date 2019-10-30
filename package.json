@@ -9,7 +9,8 @@
     "server": "node compile/server",
     "ssr": "nodemon ssr/server",
     "ssr:build": "webpack --config compile/webpack.ssr",
-    "api": "nodemon --watch api api/server"
+    "api": "nodemon --watch api api/server",
+    "lint": "eslint --ext js,jsx,ts,tsx,vue ."
   },
   "license": "ISC",
   "dependencies": {
@@ -47,6 +48,7 @@
     "css-loader": "^3.2.0",
     "eslint": "^5.16.0",
     "eslint-friendly-formatter": "^4.0.1",
+    "eslint-import-resolver-webpack": "^0.11.1",
     "eslint-loader": "^2.2.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-vue": "^5.2.3",

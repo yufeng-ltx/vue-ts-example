@@ -28,7 +28,7 @@ const actions: ActionTree<State, RootState> = {
     });
   },
   fetchNewContent({ commit }, id): AxiosPromise {
-    return http.get('news/content', { params: { id }}).then(res => {
+    return http.get('news/content', { params: { id } }).then(res => {
       const data = (res.data || {}).data || {};
       commit(types.SET_NEWS_CONTENT, { id, data });
       return res;

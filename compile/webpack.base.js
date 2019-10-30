@@ -18,9 +18,8 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.wasm', '.vue', '.json'], // 自动解析确定的扩展
+    extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.wasm', '.vue', '.json', '.d.ts'], // 自动解析确定的扩展
     alias: {
-      'vue$': 'vue/dist/vue.runtime.esm.js', // 剔除vue编译器代码
       '@': path.resolve(__dirname, '../src') // 源码目录
     }
   },
@@ -31,7 +30,6 @@ module.exports = {
     ]
   },
   module: {
-    noParse: /^(vue|vue-router|vuex|vuex-router-sync)$/, // 排除解析模块
     rules: [
       {
         enforce: 'pre',

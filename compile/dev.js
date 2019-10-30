@@ -28,14 +28,13 @@ portfinder.getPortPromise().then(port => {
     if (networkIP) console.log(`  - Network:   ${chalk.cyan(`http://${networkIP}:${port}/`)}`);
     console.log();
     if (tipsSign) {
-      console.log('  Note that the development build is not optimized.');
-      console.log();
       require('opn')(url); // open browser
       tipsSign = false;
     }
   });
   server.listen(port);
 }).catch(err => {
-  console.log(chalk.red('\nstart server with errors.\n'));
+  console.log();
+  console.log(chalk.bgRed.black(' ERROR '), chalk.red('start server with errors.'));
   process.exit(1);
 });
