@@ -27,9 +27,6 @@ module.exports = {
     "import/resolver": {
       webpack: {
         config: path.resolve(__dirname, "compile/webpack.base.js") // 解析webpack配置
-      },
-      typescript: {
-        
       }
     }
   },

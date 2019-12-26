@@ -1,12 +1,13 @@
 <template>
-  <div class="news-wrap">
+  <div class="news-qq-list">
+    <HeaderBack :showBack="false" name="腾讯要闻" />
     <template v-if="homeInit">
       <PullRefresh v-model="refreshLoad" @refresh="onRefresh">
         <List v-model="moreLoad" :finished="finished" :offset="80" @load="onLoadMore">
-          <ul v-if="newList.length" class="news-list-ul">
+          <ul v-if="newList.length" class="detail-ul">
             <li v-for="item in newList" :key="item.id">
               <div>
-                <a href="javascript:;" @click="$router.push(`/news/content/${item.id}.html`)">
+                <a href="javascript:;" @click="$router.push(`/news/qq/${item.id}.html`)">
                   <span class="tit">{{ item.title }}</span>
                   <span v-if="item.img" class="img">
                     <img v-lazy="item.img">
@@ -28,20 +29,22 @@ import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { List, PullRefresh } from 'vant';
 import { AxiosPromise } from 'axios';
-import { transformDate } from '../utils/tools';
-import * as types from '../store/mutation-types';
-import { QQNewListData } from '../store/types';
-import { SSRAsyncData } from '../types/types';
+import HeaderBack from '@/components/HeaderBack.vue';
+import { transformDate } from '@/utils/tools';
+import * as types from '@/store/mutation-types';
+import { QQNewListData } from '@/store/types';
+import { SSRAsyncData } from '@/types/types';
 
 const newsModule = namespace('news'); // 获取命名空间
 
 @Component({
   components: {
+    HeaderBack,
     List,
     PullRefresh
   }
 })
-export default class News extends Vue {
+export default class QQNews extends Vue {
   private refreshLoad: boolean = false; // 上拉加载标识
 
   private moreLoad: boolean = false; // 下滑滚动加载标识
@@ -93,8 +96,9 @@ export default class News extends Vue {
 </script>
 
 <style lang="scss">
-.news-wrap {
-  .news-list-ul {
+.news-qq-list {
+  padding-top: 100px;
+  .detail-ul {
     overflow: hidden;
     clear: both;
     margin: 0 32px;
@@ -130,7 +134,7 @@ export default class News extends Vue {
         border-radius: 8px;
         &[lazy="loading"],
         &[lazy="error"] {
-          background: #f8f8f8 url('../assets/images/qq-logo.svg') no-repeat center center;
+          background: #f8f8f8 url('~@/assets/images/qq-logo.svg') no-repeat center center;
           background-size: 60px auto;
         }
       }

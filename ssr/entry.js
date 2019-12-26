@@ -26,10 +26,10 @@ export default context => new Promise((resolve, reject) => {
         });
       }
     })).then(() => {
-      context.state = store.state;
+      // context.state = store.state;
       // 新闻内页设置title信息
       if (currentRoute.name === 'newsContent') {
-        const newContent = (context.state.news || {}).newContent || {};
+        const newContent = (store.state.news || {}).newContent || {};
         let title = '';
         Object.keys(newContent).forEach(id => {
           title = (newContent[id] || {}).title;

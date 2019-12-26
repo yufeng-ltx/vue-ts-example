@@ -17,7 +17,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 export default class Footer extends Vue {
   // 导航列表
   private navList: { name: string, icon: string, link: string }[] = [
-    { name: 'news', icon: 'xinwen', link: '' },
+    { name: 'qq-news', icon: 'xinwen', link: '' },
     { name: 'video', icon: 'shipin1', link: 'video.html' },
     { name: 'music', icon: 'yinle', link: 'music.html' },
     { name: 'photo', icon: 'image', link: 'photo.html' },
@@ -54,7 +54,7 @@ export default class Footer extends Vue {
       flex: 1;
       text-align: center;
       &.active i {
-        color: #398b50;
+        color: #d6d692;
       }
     }
     i {

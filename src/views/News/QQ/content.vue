@@ -1,7 +1,7 @@
 <template>
-  <div class="news-content-wrap">
-    <HeaderBack name="腾讯新闻" />
-    <div class="news-detail">
+  <div>
+    <HeaderBack name="腾讯要闻" />
+    <div class="news-qq-content">
       <div v-if="!currentContent" class="qqLoading"></div>
       <div v-else>
         <p class="title">{{ currentContent.title }}</p>
@@ -17,11 +17,11 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { AxiosPromise } from 'axios';
-import BackTop from '../components/BackTop.vue';
-import HeaderBack from '../components/HeaderBack.vue';
-import { QQNewContentObjData } from '../store/types';
-import { SSRAsyncData } from '../types/types';
-import { dateFormat, lazyImg } from '../utils/tools';
+import BackTop from '@/components/BackTop.vue';
+import HeaderBack from '@/components/HeaderBack.vue';
+import { QQNewContentObjData } from '@/store/types';
+import { SSRAsyncData } from '@/types/types';
+import { dateFormat, lazyImg } from '@/utils/tools';
 
 const newsModule = namespace('news'); // 获取命名空间
 
@@ -31,7 +31,7 @@ const newsModule = namespace('news'); // 获取命名空间
     BackTop
   }
 })
-export default class NewsContent extends Vue {
+export default class NewsQQContent extends Vue {
   private htmlContent: string = '';
 
   private newId: string = '';
@@ -115,64 +115,63 @@ export default class NewsContent extends Vue {
 </script>
 
 <style lang="scss">
-.news-content-wrap {
-  .news-detail {
-    padding: 100px 30px 20px 30px;
-    line-height: 1.5;
-    .title {
-      font-size: 40px;
-      font-weight: bold;
+.news-qq-content {
+  padding: 100px 30px 20px 30px;
+  line-height: 1.5;
+  .title {
+    font-size: 40px;
+    font-weight: bold;
+  }
+  .info {
+    padding: 10px 0;
+    font-size: 28px;
+    span {
+      color: #bbb;
+      padding-left: 20px;
     }
-    .info {
-      padding: 10px 0;
-      font-size: 28px;
-      span {
-        color: #bbb;
-        padding-left: 20px;
-      }
-    }
-    .cont {
-      font-size: 34px;
-      padding-top: 20px;
-      p {
-        padding-bottom: 20px;
-        &.p-img {
-          span {
-            display: block;
-            overflow: hidden;
-            clear: both;
-            position: relative;
+  }
+  .cont {
+    font-size: 32px;
+    padding-top: 20px;
+    line-height: 1.8;
+    p {
+      padding-bottom: 20px;
+      &.p-img {
+        span {
+          display: block;
+          overflow: hidden;
+          clear: both;
+          position: relative;
+        }
+        img {
+          max-width: 100%;
+          display: block;
+          margin: 0 auto;
+        }
+        .desc {
+          font-size: 28px;
+          color: #666;
+          padding: 10px 0;
+        }
+        &[data-vid] {
+          .img {
+            background-color: #000;
+            &::after {
+              content: '';
+              display: block;
+              background: url('~@/assets/images/play-circle.svg') no-repeat;
+              position: absolute;
+              cursor: pointer;
+              width: 120px;
+              height: 120px;
+              background-size: 120px auto;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+            }
           }
           img {
-            max-width: 100%;
-            display: block;
-            margin: 0 auto;
-          }
-          .desc {
-            font-size: 28px;
-            color: #666;
-            padding: 10px 0;
-          }
-          &[data-vid] {
-            .img {
-              background-color: #000;
-              &::after {
-                content: '';
-                display: block;
-                background: url('../assets/images/play-circle.svg') no-repeat;
-                position: absolute;
-                cursor: pointer;
-                width: 120px;
-                height: 120px;
-                background-size: 120px auto;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-              }
-            }
-            img {
-              width: 80%!important;
-            }
+            width: 80%!important;
           }
         }
       }

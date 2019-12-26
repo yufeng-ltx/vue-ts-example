@@ -2,12 +2,12 @@ import Vue from 'vue';
 import Router, { RouteConfig, Route } from 'vue-router';
 
 import Index from './views/Index.vue';
-import News from './views/News.vue';
+import QQNews from './views/News/QQ/index.vue';
+import QQNewsContent from './views/News/QQ/content.vue';
 import Video from './views/Video.vue';
 import Photo from './views/Photo.vue';
 import Music from './views/Music.vue';
 import Shopping from './views/Shopping.vue';
-import NewsContent from './views/NewsContent.vue';
 
 Vue.use(Router);
 
@@ -18,8 +18,8 @@ const routes: Array<RouteConfig> = [
     children: [
       {
         path: '/',
-        name: 'news',
-        component: News,
+        name: 'qq-news',
+        component: QQNews,
         meta: {
           title: '腾讯要闻'
         }
@@ -37,7 +37,7 @@ const routes: Array<RouteConfig> = [
         name: 'music',
         component: Music,
         meta: {
-          title: '酷狗音乐'
+          title: '热门音乐'
         }
       },
       {
@@ -59,9 +59,12 @@ const routes: Array<RouteConfig> = [
     ]
   },
   {
-    path: '/news/content/:id.html',
-    name: 'newsContent',
-    component: NewsContent
+    path: '/news/qq/:id.html',
+    name: 'qq-news-content',
+    component: QQNewsContent,
+    meta: {
+      title: '腾讯要闻'
+    }
   }
 ];
 

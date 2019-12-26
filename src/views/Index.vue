@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <!-- <Header /> -->
     <router-view class="content-wrap" />
     <Footer />
     <BackTop />
@@ -27,7 +27,8 @@ export default class Index extends Vue {
 
 <style lang="scss">
 .content-wrap {
-  padding: 100px 0;
+  // padding: 100px 0;
+  padding-bottom: 100px;
   position: relative;
   height: 100%;
   background-color: #fff;

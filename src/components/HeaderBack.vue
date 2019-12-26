@@ -1,6 +1,6 @@
 <template>
   <div class="header" :style="{ 'background-color': bgColor }">
-    <i class="iconfont icon-arrow-left" @click="goBack"></i>
+    <i v-if="showBack" class="iconfont icon-arrow-left" @click="goBack"></i>
     <span>{{ name }}</span>
   </div>
 </template>
@@ -14,6 +14,8 @@ export default class Header extends Vue {
 
   @Prop() private bgColor!: string
 
+  @Prop({ default: true }) private showBack!: Boolean
+
   public goBack() {
     this.$router.go(-1);
   }
@@ -26,10 +28,10 @@ export default class Header extends Vue {
   z-index: 10;
   height: 90px;
   width: 100%;
+  top: 0;
   max-width: $globalMaxHeight; /*no*/
   line-height: 90px;
   padding: 0 20px;
-  border-bottom: 1px solid #eee;
   background-color: #537bff;
   color: #fff;
   i {

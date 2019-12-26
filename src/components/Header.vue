@@ -1,12 +1,12 @@
 <template>
   <div class="header">
-    <div class="search">
+    <!-- <div class="search">
       <i class="iconfont icon-search"></i>
       <input type="text" placeholder="百度搜索" />
       <a href="javascript:;">
         <i class="iconfont icon-paizhao"></i>
       </a>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -21,6 +21,7 @@ export default class Header extends Vue {
 
 <style lang="scss" scoped>
 .header {
+  display: none;
   padding: 10px 32px;
   position: fixed;
   width: 100%;
