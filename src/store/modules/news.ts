@@ -21,14 +21,14 @@ const state = (): State => ({ // 避免ssr数据公用，state 必须是一个�
 const actions: ActionTree<State, RootState> = {
   fetchNewsList({ commit }, params): AxiosPromise {
     params = params || {};
-    return http.get('news/list', { params }).then(res => {
+    return http.get('news/qq/list', { params }).then(res => {
       const data = (res.data || {}).data || {};
       commit(types.SET_NEWS_DATA, data);
       return res;
     });
   },
   fetchNewContent({ commit }, id): AxiosPromise {
-    return http.get('news/content', { params: { id } }).then(res => {
+    return http.get('news/qq/content', { params: { id } }).then(res => {
       const data = (res.data || {}).data || {};
       commit(types.SET_NEWS_CONTENT, { id, data });
       return res;

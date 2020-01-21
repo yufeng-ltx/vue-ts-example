@@ -41,7 +41,7 @@ const replaceImgHttps = (src) => {
 };
 
 // 获取腾讯新闻
-app.use(`${apiRoot}news/list`, (req, res) => {
+app.use(`${apiRoot}news/qq/list`, (req, res) => {
   // 获取缓存数据
   const cache = getCacheFn(req, res);
   if (cache) return true;
@@ -93,7 +93,7 @@ app.use(`${apiRoot}news/list`, (req, res) => {
 });
 
 // 腾讯新闻详情
-app.use(`${apiRoot}news/content`, (req, res) => {
+app.use(`${apiRoot}news/qq/content`, (req, res) => {
   // 获取缓存数据
   const cache = getCacheFn(req, res);
   if (cache) return true;
@@ -107,42 +107,39 @@ app.use(`${apiRoot}news/content`, (req, res) => {
       rawData += chunk;
     });
     hRes.on('end', () => {
-      const regArr = rawData.match(/var\s+globalConfig\s+=\s+(\{[^]*\};)[\n\s]+<\/script>/);
+      const regArr = rawData.match(/<script id=\"__NEXT_DATA__\" type=\"application\/json\">(.+?)<\/script>/);
       if (regArr && regArr[1]) {
         try {
-          eval(`global.globalConfig = ${regArr[1]}`);
-          if (global.globalConfig) {
-            const json = global.globalConfig.content || {};
-            let html = json.cnt_html || '';
-            const attr = json.cnt_attr || {};
-            const attrCopy = {};
-            Object.keys(attr).forEach(name => {
-              const info = attr[name] || {};
-              const img = (info.img || {})['imgurl640'] || {};
-              attrCopy[name] = {
-                desc: info.desc || '',
-                width: img.width || 0,
-                height: img.height || 0,
-                url: replaceImgHttps(img.imgurl || ''),
-                vid: info.vid || ''
-              };
-            });
-            // 设置缓存输出
-            setCacheFn(req, res, {
-              data: {
-                html,
-                time: new Date(json.org_time || json.pubtime || '').getTime() || '',
-                source: json.chlname || json.src || '',
-                title: json.title || '',
-                attr: attrCopy
-              }
-            });
-          } else throw new Error('请求出错，解析数据失败');
+          const json = JSON.parse(regArr[1]).props.pageProps.data.data.content;
+          let html = json.cnt_html || '';
+          const attr = json.cnt_attr || {};
+          const attrCopy = {};
+          Object.keys(attr).forEach(name => {
+            const info = attr[name] || {};
+            const img = (info.img || {})['imgurl640'] || {};
+            attrCopy[name] = {
+              desc: info.desc || '',
+              width: img.width || 0,
+              height: img.height || 0,
+              url: replaceImgHttps(img.imgurl || ''),
+              vid: info.vid || ''
+            };
+          });
+          // 设置缓存输出
+          setCacheFn(req, res, {
+            data: {
+              html,
+              time: new Date(json.org_time || json.pubtime || '').getTime() || '',
+              source: json.chlname || json.src || '',
+              title: json.title || '',
+              attr: attrCopy
+            }
+          });
         } catch (err) {
-          errResSend(res, err);
+          errResSend(res, new Error('请求出错，解析数据失败'));
         }
       } else {
-        errResSend(res, new Error('请求出错，内容抓取失败'));
+        errResSend(res, new Error('请求出错，解析数据失败'));
       }
     });
   }).on('error', err => {

@@ -1,6 +1,6 @@
 <template>
   <div class="news-qq-list">
-    <HeaderBack :showBack="false" name="腾讯要闻" />
+    <HeaderBack :showBack="false" name="腾讯新闻" />
     <template v-if="homeInit">
       <PullRefresh v-model="refreshLoad" @refresh="onRefresh">
         <List v-model="moreLoad" :finished="finished" :offset="80" @load="onLoadMore">

@@ -46,7 +46,6 @@ export const lazyImg = (): IntersectionObserver|undefined => { // 图片延迟�
     if (!src) return;
     target.setAttribute('src', src);
     target.removeAttribute(attr);
-    target.removeAttribute('style');
   };
   const lazyObj = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {

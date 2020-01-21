@@ -21,7 +21,7 @@ const routes: Array<RouteConfig> = [
         name: 'qq-news',
         component: QQNews,
         meta: {
-          title: '腾讯要闻'
+          title: '腾讯新闻'
         }
       },
       {
@@ -63,7 +63,7 @@ const routes: Array<RouteConfig> = [
     name: 'qq-news-content',
     component: QQNewsContent,
     meta: {
-      title: '腾讯要闻'
+      title: '腾讯新闻'
     }
   }
 ];

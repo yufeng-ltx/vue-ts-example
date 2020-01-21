@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderBack name="腾讯要闻" />
+    <HeaderBack name="腾讯新闻" />
     <div class="news-qq-content">
       <div v-if="!currentContent" class="qqLoading"></div>
       <div v-else>
@@ -90,7 +90,7 @@ export default class NewsQQContent extends Vue {
         let url = info.url;
         if (url) {
           const height = (info.height || 0) / 64;
-          const heightStyle = height ? ' style="height: ' + height + 'rem"' : '';
+          const heightStyle = height && !info.vid ? ' style="height: ' + height + 'rem"' : '';
           return `<p class="p-img"${info.vid ? ' data-vid="' + info.vid + '"' : ''}><span class="img"><img${heightStyle} data-src="${url}"></span><span class="desc">${info.desc || ''}</span></p>`;
         } else return '';
       });
