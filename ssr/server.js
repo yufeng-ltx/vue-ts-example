@@ -3,8 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const LRU = require('lru-cache');
 const { createBundleRenderer } = require('vue-server-renderer');
+const htmlMinify = require('html-minifier-terser').minify;
 
-const { getFlexibleCtx, apiProxy, openGzip } = require('../compile/utils');
+const { apiProxy, openGzip } = require('../compile/utils');
 
 const app = express();
 
@@ -40,7 +41,7 @@ const renderer = createBundleRenderer(serverBundle, {
 // 设置页面缓存
 const microCache = new LRU({
   max: 100,
-  maxAge: 1000 * 10 // 重要提示：条目在 10 秒后过期。
+  maxAge: 1000 * 60 // 重要提示：条目在 60 秒后过期。
 });
 
 const isCacheable = (req) => {
@@ -59,7 +60,6 @@ app.get('*', (req, res) => {
   }
   const context = {
     url: req.url,
-    flexibleCtx: getFlexibleCtx(),
     baseURL: '/',
     assetsURL: '/static/'
   };
@@ -70,10 +70,16 @@ app.get('*', (req, res) => {
       } else {
         res.status(500).end(err.stack);
         // res.redirect('/');
-        // console.log(err);
       }
     }
     res.status(context.HTTPStatus || 200);
+    // 压缩html代码
+    html = htmlMinify(html, {
+      removeComments: true,
+      collapseWhitespace: true,
+      collapseBooleanAttributes: true,
+      removeScriptTypeAttributes: true
+    });
     res.end(html);
     // 设置缓存
     if (cacheable) {

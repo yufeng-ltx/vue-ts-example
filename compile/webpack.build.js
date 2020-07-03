@@ -8,7 +8,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
-const { assetsPath, cssLoaders, getFlexibleCtx } = require('./utils');
+const { assetsPath, cssLoaders } = require('./utils');
 const webpackCommonConfig = require('./webpack.base');
 
 const webpackConfig = merge(webpackCommonConfig, {
@@ -42,8 +42,7 @@ const webpackConfig = merge(webpackCommonConfig, {
       template: './public/index.html',
       templateParameters: { // 模板变量定义
         BASE_URL: '/',
-        ASSETS_URL: '/static/',
-        flexibleJS: getFlexibleCtx()
+        ASSETS_URL: '/static/'
       },
       minify: { // 开启压缩
         removeComments: true,

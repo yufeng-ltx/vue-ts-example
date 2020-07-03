@@ -54,7 +54,7 @@ export default class Footer extends Vue {
       flex: 1;
       text-align: center;
       &.active i {
-        color: #d6d692;
+        color: #5daf90;
       }
     }
     i {

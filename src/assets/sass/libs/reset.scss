@@ -8,12 +8,19 @@
 html {
   width: 100%;
   height: 100%;
+  font-size: 10vw;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: none;
   margin: 0 auto;
   max-width: $globalMaxHeight; /*no*/;
   background-color: #efefef;
+}
+
+@media screen and (min-width: 750px ) {
+  html {
+    font-size: 75px; /*no*/
+  }
 }
 
 body {
@@ -27,7 +34,21 @@ body {
   overflow: hidden;
   overflow-y: scroll;
   background-color: white;
-  margin-top: 0 !important;
+  // 滚动条设置
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(0,0,0,0.5);
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(0,0,0,0);
+  }
+  &::-webkit-scrollbar-button {
+    height: 0px;
+  }
 }
 
 input,

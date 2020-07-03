@@ -9,7 +9,7 @@ const { cssLoaders, apiProxy } = require('./utils');
 module.exports = merge(webpackCommonConfig, {
   mode: 'development',
   entry: {
-    app: ['./src/main.ts', './public/static/libs/flexible.js']
+    app: ['./src/main.ts']
   },
   output: {
     filename: '[name].js'
