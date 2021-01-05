@@ -17,7 +17,7 @@
     "@babel/runtime": "^7.5.5",
     "@babel/runtime-corejs2": "^7.5.5",
     "animejs": "^3.1.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "vant": "^2.2.1",
     "vue": "^2.6.10",
     "vue-property-decorator": "^8.2.1",
